@@ -1,4 +1,6 @@
 from collections import defaultdict
+from random import shuffle
+
 from modified_brain import Brain, Area
 
 # 我的命名逻辑：非终止符有谓词（pred）和指称词（deno）两种, 谓词根据变元数不同, 分为0, 1, 2, 3元等……
@@ -122,7 +124,7 @@ class ParserBrain(Brain):
             self.all_areas.append(value.area_name)
 
     # 生成测试用例,根据你的词表,生成所有合法的句子用于测试
-    def generate_sentences(self, output_dir="test_sentences.txt"):
+    def generate_sentences(self, size=500, output_dir="test_sentences.txt"):
         # 以正则表达式"(Adj)*(Noun)(V)((Adj)*(Noun)+epsilon)"为例
         # 假设*不允许出现重复的字符
         output_list = []
@@ -158,6 +160,9 @@ class ParserBrain(Brain):
         for vi in vi_list:
             for i in np_list:
                 output_list.append(i + ' ' + vi)
+        # 使用测试用例的时候如果数量太大可以随机抽部分
+        shuffle(output_list)
+        output_list = output_list[:500]
         # 写文件
         with open(output_dir, "w") as f:
             for line in output_list:
@@ -168,4 +173,3 @@ if __name__ == '__main__':
     pb = ParserBrain(0.01)
     # 生成测试用例
     pb.generate_sentences()
-    # 使用测试用例的时候如果数量太大可以随机抽部分
